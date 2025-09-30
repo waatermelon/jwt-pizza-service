@@ -78,7 +78,7 @@ jobs:
       - name: Force-refresh README badge
         run: |
           TIMESTAMP=$(date +%s)
-          sed -i "s|\(https://pizza-factory.cs329.click/api/badge/htakara/jwtpizzaservicecoverage\).*|\1?t=$TIMESTAMP|" README.md
+          sed -i "s|\(https://pizza-factory.cs329.click/api/badge/htakara/jwtpizzaservicecoverage\).*|\1?t=$TIMESTAMP)|" README.md
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add README.md
