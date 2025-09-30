@@ -7,6 +7,7 @@ on:
   workflow_dispatch:
 jobs:
   build:
+    if: github.actor != 'github-actions'
     name: Build
     runs-on: ubuntu-latest
     outputs:
@@ -73,3 +74,13 @@ jobs:
           color=$(echo "$coverage < 40" | bc | awk '{if ($1) print "red"; else print "green"}')
           timestamp=$(date +%s)
           curl -s -X POST "https://pizza-factory.cs329.click/api/badge/${{ secrets.NET_ID }}/jwtpizzaservicecoverage?label=Coverage&value=$coverage%25&color=$color&t=$timestamp" -H "authorization: bearer ${{ secrets.FACTORY_API_KEY }}"
+      
+      - name: Force-refresh README badge
+        run: |
+          TIMESTAMP=$(date +%s)
+          sed -i "s|\(https://pizza-factory.cs329.click/api/badge/htakara/jwtpizzaservicecoverage\).*|\1?t=$TIMESTAMP|" README.md
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add README.md
+          git commit -m "update(readme) automated coverage badge update [skip ci]"
+          git push
