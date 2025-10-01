@@ -69,6 +69,40 @@ test('logout', async () => {
   expect(logoutRes.body.message).toBe('logout successful');
 });
 
+test('generate franchise', async () => {
+  testFranchise.name = randomStr() + "'s pizza!";
+  testFranchise.admins = [{ 'email': adminUser.email }];
+
+  const franchiseRes = await request(app)
+  .post('/api/franchise')
+  .set('Authorization', 'Bearer ' + adminUserAuthToken)
+  .send(testFranchise);
+
+  franchiseId = franchiseRes.body.id;
+  expect(franchiseRes.status).toBe(200);
+});
+
+test('generate store', async () => {
+  testStore.franchiseId = franchiseId;
+
+  const storeRes = await request(app)
+  .post('/api/franchise/' + franchiseId + '/store')
+  .set('Authorization', 'Bearer ' + adminUserAuthToken)
+  .send(testStore);
+
+  storeId = storeRes.body.id;
+  expect(storeRes.status).toBe(200);
+});
+
+test('add item', async () => {
+  const addedRes = await request(app)
+  .put('/api/order/menu')
+  .set('Authorization', 'Bearer ' + adminUserAuthToken)
+  .send({ "title":"Student", "description": "No topping, no sauce, just carbs", "image":"pizza9.png", "price": 0.0001 })
+  
+  expect(addedRes.status).toBe(200);
+});
+
 test('generate order', async () => {
   const orderRes = await request(app)
   .post('/api/order')
@@ -84,32 +118,6 @@ test('find order', async () => {
   .set('Authorization', 'Bearer ' + adminUserAuthToken);
 
   expect(orderRes.status).toBe(200);
-});
-
-test('generate franchise', async () => {
-  testFranchise.name = randomStr() + "'s pizza!";
-  testFranchise.admins = [{ 'email': adminUser.email }];
-
-  const franchiseRes = await request(app)
-  .post('/api/franchise')
-  .set('Authorization', 'Bearer ' + adminUserAuthToken)
-  .send(testFranchise);
-
-  franchiseId = franchiseRes.body.id;
-  expect(franchiseRes.status).toBe(200);
-});
-
-
-test('generate store', async () => {
-  testStore.franchiseId = franchiseId;
-
-  const storeRes = await request(app)
-  .post('/api/franchise/' + franchiseId + '/store')
-  .set('Authorization', 'Bearer ' + adminUserAuthToken)
-  .send(testStore);
-
-  storeId = storeRes.body.id;
-  expect(storeRes.status).toBe(200);
 });
 
 test('delete store', async () => {
