@@ -11,12 +11,12 @@ let franchiseId;
 let storeId;
 
 const testOrder = {
-  'franchiseId': 1234,
-  'storeId': 1234,
+  'franchiseId': 1,
+  'storeId': 1,
   'items': [{
-      'menuId': 5,
-      'description': 'PIZAAAAA',
-      'price': 1.99,
+      'menuId': 1,
+      'description': 'Veggie',
+      'price': 0.05,
   }],
 };
 const testStore = {
