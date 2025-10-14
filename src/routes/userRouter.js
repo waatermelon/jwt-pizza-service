@@ -63,6 +63,7 @@ userRouter.put(
   '/:userId',
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
+    console.log("GOT TO ASYNC HANDLER!!")
     const { name, email, password } = req.body;
     const userId = Number(req.params.userId);
     const user = req.user;

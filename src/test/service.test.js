@@ -6,6 +6,7 @@ const testUser = { name: 'pizza diner', email: 'reg@test.com', password: 'a' };
 const adminUser = { name: "pizza admin", email: 'admin@admin.com', password: 'a', roles: [{ role: Role.Admin }]};
 
 let testUserAuthToken;
+let testerId;
 let adminUserAuthToken;
 let franchiseId;
 let storeId;
@@ -33,6 +34,7 @@ beforeAll(async () => {
   testUser.email = randomStr() + '@test.com';
   const registerRes = await request(app).post('/api/auth').send(testUser);
   testUserAuthToken = registerRes.body.token;
+  testerId = registerRes.body.user.id;
   expectValidJwt(testUserAuthToken);
 
   adminUser.email = randomStr() + '@admin.com';
@@ -41,6 +43,8 @@ beforeAll(async () => {
   const adminLoginRes = await request(app).put('/api/auth').send(admin);
   adminUserAuthToken = adminLoginRes.body.token;
   expectValidJwt(adminUserAuthToken);
+  console.log('auth token:')
+  console.log(testUserAuthToken);
 });
 
 test('login', async () => {
@@ -155,6 +159,23 @@ test('illegal api', async () => {
   const illegalRes = await request(app).post('/wowowowow');
   expect(illegalRes.status).toBe(404);
 });
+
+test('update user', async () => {
+  const updatedData = { name: 'Updated Name', email: 'updated@test.com', password: 'newpass' };
+
+  const registerRes = await request(app).post('/api/auth').send(testUser);
+  testUserAuthToken = registerRes.body.token;
+  testerId = registerRes.body.user.id;
+
+  const res = await request(app)
+    .put(`/api/user/${testerId}`)                   // use the correct ID
+    .set('Authorization', 'Bearer ' + testUserAuthToken)
+    .send(updatedData);
+  
+  expect(res.status).toBe(200);
+  expect(res.body.user.name).toBe('Updated Name');
+});
+
 
 test('list users unauthorized', async () => {
   const listUsersRes = await request(app).get('/api/user');
