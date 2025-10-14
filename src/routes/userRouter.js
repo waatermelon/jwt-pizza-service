@@ -26,12 +26,17 @@ userRouter.docs = [
     method: 'GET',
     path: '/api/user?page=1&limit=10&name=*',
     requiresAuth: true,
-    description: 'Get users list',
-    example: ``,
-    response: {"users":[
-      {"id":3,"name":"Kai Chen","email":"d@jwt.com","roles":[{"role":"diner"}]},
-      {"id":5,"name":"Buddy","email":"b@jwt.com","roles":[{"role":"admin"}]}
-      ], "more":true
+    description: 'Get list of users',
+    example: `curl -X GET localhost:3000/api/user -H 'Authorization: Bearer tttttt'`,
+    response: {
+      users: [
+        {
+          id: 1,
+          name: '常用名字',
+          email: 'a@jwt.com',
+          roles: [{ role: 'admin' }],
+        },
+      ],
     },
   },
   {
@@ -39,7 +44,7 @@ userRouter.docs = [
     path: '/api/user/:userId',
     requiresAuth: true,
     description: 'Delete user',
-    example: ``,
+    example: `curl -X GET localhost:3000/api/user -H 'Authorization: Bearer tttttt'`,
     response: null,
   },
 ];
@@ -74,8 +79,9 @@ userRouter.put(
 // TODO setup list users
 userRouter.get(
   '/',
+  authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
-    
+    res.json({});
   })
 )
 // TODO setup DELETE users
