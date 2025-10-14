@@ -63,7 +63,6 @@ userRouter.put(
   '/:userId',
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
-    console.log("GOT TO ASYNC HANDLER!!")
     const { name, email, password } = req.body;
     const userId = Number(req.params.userId);
     const user = req.user;
@@ -77,22 +76,43 @@ userRouter.put(
   })
 );
 
-// TODO setup list users
+// listUsers
 userRouter.get(
   '/',
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
-    res.json({});
+    const user = req.user;
+    if (!user.isRole(Role.Admin)) {
+      return res.status(403).json({ message: 'unauthorized' });
+    }
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const name = req.query.name || '*';
+
+    const [users, more] = await DB.getUsersList(page, limit, name);
+    res.json({ users, more });
   })
-)
-// TODO setup DELETE users
+);
+
+
+// deleteUser
 userRouter.delete(
   '/:userId',
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
+    const authUser = req.user;
+    const userId = Number(req.params.userId);
 
+    if (authUser.id !== userId && !authUser.isRole(Role.Admin)) {
+      return res.status(403).json({ message: 'unauthorized' });
+    }
+
+    await DB.deleteUser(userId);
+    res.status(204).send();
   })
-)
+);
+
 
 
 module.exports = userRouter;
