@@ -22,6 +22,26 @@ userRouter.docs = [
     example: `curl -X PUT localhost:3000/api/user/1 -d '{"name":"常用名字", "email":"a@jwt.com", "password":"admin"}' -H 'Content-Type: application/json' -H 'Authorization: Bearer tttttt'`,
     response: { user: { id: 1, name: '常用名字', email: 'a@jwt.com', roles: [{ role: 'admin' }] }, token: 'tttttt' },
   },
+  {
+    method: 'GET',
+    path: '/api/user?page=1&limit=10&name=*',
+    requiresAuth: true,
+    description: 'Get users list',
+    example: ``,
+    response: {"users":[
+      {"id":3,"name":"Kai Chen","email":"d@jwt.com","roles":[{"role":"diner"}]},
+      {"id":5,"name":"Buddy","email":"b@jwt.com","roles":[{"role":"admin"}]}
+      ], "more":true
+    },
+  },
+  {
+    method: 'DELETE',
+    path: '/api/user/:userId',
+    requiresAuth: true,
+    description: 'Delete user',
+    example: ``,
+    response: null,
+  },
 ];
 
 // getUser
@@ -50,5 +70,22 @@ userRouter.put(
     res.json({ user: updatedUser, token: auth });
   })
 );
+
+// TODO setup list users
+userRouter.get(
+  '/',
+  asyncHandler(async (req, res) => {
+    
+  })
+)
+// TODO setup DELETE users
+userRouter.delete(
+  '/:userId',
+  authRouter.authenticateToken,
+  asyncHandler(async (req, res) => {
+
+  })
+)
+
 
 module.exports = userRouter;

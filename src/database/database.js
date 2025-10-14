@@ -55,6 +55,14 @@ class DB {
     }
   }
 
+  async deleteUser() {
+    //TODO
+  }
+
+  async getUsersList() {
+    //TODO
+  }
+
   async getUser(email, password) {
     const connection = await this.getConnection();
     try {
