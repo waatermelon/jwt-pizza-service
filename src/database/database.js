@@ -366,7 +366,7 @@ async getUsersList(page = 1, limit = 10, nameFilter = '*') {
   }
 
   async _getConnection(setUse = true) {
-    console.log('GETTING CONNECTION!!')
+    console.log('GETTING CONNECTION!!') 
     const connection = await mysql.createConnection({
       host: config.db.connection.host,
       user: config.db.connection.user,
