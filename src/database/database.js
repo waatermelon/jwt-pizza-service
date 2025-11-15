@@ -366,6 +366,7 @@ async getUsersList(page = 1, limit = 10, nameFilter = '*') {
   }
 
   async _getConnection(setUse = true) {
+    console.log('GETTING CONNECTION!!')
     const connection = await mysql.createConnection({
       host: config.db.connection.host,
       user: config.db.connection.user,
@@ -373,6 +374,7 @@ async getUsersList(page = 1, limit = 10, nameFilter = '*') {
       connectTimeout: config.db.connection.connectTimeout,
       decimalNumbers: true,
     });
+    console.log("GOT CONNECTION")
     if (setUse) {
       await connection.query(`USE ${config.db.connection.database}`);
     }
